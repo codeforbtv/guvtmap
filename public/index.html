@@ -6,7 +6,7 @@
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
   integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
   crossorigin=""/>
-  <title>Welcome to Firebase Hosting</title>
+  <title>Green Up Vermont Activity Map</title>
   
   <!-- update the version number as needed -->
   <script defer src="/__/firebase/9.6.11/firebase-app-compat.js"></script>
@@ -30,22 +30,22 @@
   crossorigin="">
   </script>
   <style media="screen">
-  html {width: 100%; height: 100%;}
-  body {width: 100%; height: 100%; background: #ECEFF1; color: rgba(0,0,0,0.87); font-family: Roboto, Helvetica, Arial, sans-serif; margin: 0; padding: 0; }
-  #message { background: white; max-width: 360px; margin: 100px auto 16px; padding: 32px 24px; border-radius: 3px; }
-  #message h2 { color: #ffa100; font-weight: bold; font-size: 16px; margin: 0 0 8px; }
-  #message h1 { font-size: 22px; font-weight: 300; color: rgba(0,0,0,0.6); margin: 0 0 16px;}
-  #message p { line-height: 140%; margin: 16px 0 24px; font-size: 14px; }
-  #message a { display: block; text-align: center; background: #039be5; text-transform: uppercase; text-decoration: none; color: white; padding: 16px; border-radius: 4px; }
-  #message, #message a { box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24); }
-  #load { color: rgba(0,0,0,0.4); text-align: center; font-size: 13px; }
-  @media (max-width: 600px) {
-    body, #message { margin-top: 0; background: white; box-shadow: none; }
-    body { border-top: 16px solid #ffa100; }
-  }
-  #map {
-    width: 100%; height: 100%;
-  }
+    html {width: 100%; height: 100%;}
+    body {width: 100%; height: 100%; background: #ECEFF1; color: rgba(0,0,0,0.87); font-family: Roboto, Helvetica, Arial, sans-serif; margin: 0; padding: 0; }
+    #message { background: white; max-width: 360px; margin: 100px auto 16px; padding: 32px 24px; border-radius: 3px; }
+    #message h2 { color: #ffa100; font-weight: bold; font-size: 16px; margin: 0 0 8px; }
+    #message h1 { font-size: 22px; font-weight: 300; color: rgba(0,0,0,0.6); margin: 0 0 16px;}
+    #message p { line-height: 140%; margin: 16px 0 24px; font-size: 14px; }
+    #message a { display: block; text-align: center; background: #039be5; text-transform: uppercase; text-decoration: none; color: white; padding: 16px; border-radius: 4px; }
+    #message, #message a { box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24); }
+    #load { color: rgba(0,0,0,0.4); text-align: center; font-size: 13px; }
+    @media (max-width: 600px) {
+      body, #message { margin-top: 0; background: white; box-shadow: none; }
+      body { border-top: 16px solid #ffa100; }
+    }
+    #map {
+      width: 100%; height: 100%;
+    }
   </style>
 </head>
 <body>
@@ -53,20 +53,21 @@
   <script type="module">
     // Import the functions you need from the SDKs you need
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.11/firebase-app.js";
-    //var vtTownBounds = {};
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.6.11/firebase-analytics.js";
 
     // TODO: Add SDKs for Firebase products that you want to use
     // https://firebase.google.com/docs/web/setup#available-libraries
     
     // Your web app's Firebase configuration
     const firebaseConfig = {
-      apiKey: "AIzaSyBUicpls4kgf0-sRbEqIJorP7Vj3CCGTSg",
-      authDomain: "greenupvermont-dev.firebaseapp.com",
-      databaseURL: "https://greenupvermont-dev.firebaseio.com",
-      projectId: "greenupvermont-dev",
-      storageBucket: "greenupvermont-dev.appspot.com",
-      messagingSenderId: "447874135722",
-      appId: "1:447874135722:web:09438c19ba52b4e5de42d3"
+      apiKey: "AIzaSyCOrCzO_pJ3_OVw3ScpwP2Fl6-h4wJ8IOA",
+      authDomain: "greenupvermont-de02b.firebaseapp.com",
+      databaseURL: "https://greenupvermont-de02b.firebaseio.com",
+      projectId: "greenupvermont-de02b",
+      storageBucket: "greenupvermont-de02b.appspot.com",
+      messagingSenderId: "439621369113",
+      appId: "1:439621369113:web:cf3fcd33eae9ed37d19988",
+      measurementId: "G-838B67JHF2"
     };
     
     // Initialize Firebase
@@ -76,49 +77,74 @@
     document.addEventListener(
       'DOMContentLoaded', 
       function() {
+        // Parsing the URL params to set some default state
         const queryString = window.location.search;
-        console.log("QueryString:", queryString);
+        //console.log("QueryString:", queryString);
         const urlParams = new URLSearchParams(queryString);
         const town = urlParams.get('town');
-        const drawTrashDrops = urlParams.get('trashDrops');
-        const drawTeamAreas = urlParams.get('teamAreas');
-        const drawCollectionSites = urlParams.get('collectionSites');
-        const drawSupplySites = urlParams.get('supplySites');
-        console.log("Town:", town);
+        const drawTrashDrops = String(urlParams.get('trashDrops')).toLowerCase() == "true";
+        const drawTeamAreas = String(urlParams.get('teamAreas')).toLowerCase() == "true";
+        const drawCollectionSites = String(urlParams.get('collectionSites')).toLowerCase() == "true";
+        const drawSupplySites = String(urlParams.get('supplySites')).toLowerCase() == "true";
+        const onlyTrashMarker = String(urlParams.get('onlyTrashMarker')).toLowerCase() == "true";
+        const hideToolbar = String(urlParams.get('hideToolbar')).toLowerCase() == "true";
+        //console.log("Town:", town);
+
+        // Get the map initialized
         var map = L.map('map').setView([44.2601, -72.5754], 7);
         var basemap = L.tileLayer(
           'https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', 
           {
             attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
             maxZoom: 18,
+            minZoom: 7,
             id: 'mapbox/streets-v11',
             tileSize: 512,
             zoomOffset: -1,
-            accessToken: 'pk.eyJ1IjoibmZsb3VyaXNoIiwiYSI6ImNsMjB4MTZtaTEwd3MzanFyM21tN2s5cXMifQ.P7eQ4URoPV5OlhnQtHjCXA'
+            accessToken: 'pk.eyJ1IjoibmZsb3VyaXNoIiwiYSI6ImNsMjQzbno1bjFxZzUza21pdjJ4eWdjZnYifQ.5s3l2AhlQkNDea21n4N8Sg'
           }
         );
         basemap.addTo(map);
-
+        // With the way Leaflet works, it is helpful to keep track of the layer infos
+        // separate from the effort of adding them to the map.
         var townboundslayer = {};
         var townEnvelopes = {};
+
+        // Get a list of polygon GeoJSON data for all town boundaries in VT.
         fetch("./vttowns.geojson").then(
           response => {
             return response.json();
           }
         )
+        // Then add them to the Leaflet map
         .then(
           json => {
-            console.log(json);
+            //console.log(json);
             var vtTownBounds = json;
 
             townboundslayer = L.geoJSON(
               vtTownBounds,
               {
+                // For each feature that is brought in ... each town boundary ...
+                // We need to flip its coordinates and store the polygon to our
+                // secondary list of such polygons by town name. This is because
+                // GeoJSON specifies storing position as [Long,Lat] and Leaflet
+                // uses [Lat,Long]. But this also is where we copy the polygons
+                // to the townEnvelopes array so we can zoom to them later, based
+                // on their name.
                 onEachFeature: function(feature,layer) {
+                  // This is probably not necessary but since each VT Town name is unique
+                  // they can be used to give each poly on the map an ID of the town name.
                   layer._leaflet_id = feature.properties.TOWNNAME;
+                  // Some of the town polys were not importing lat/long properly,
+                  // so this is in a try/catch.
                   try {
+                    // Get the GeoJSON coordinates (i.e., [long,lat])
                     var gjCoords = feature.geometry.coordinates;
+                    // Leaflet function call to flip the coordinates
                     var latLngCoords = L.GeoJSON.coordsToLatLngs(gjCoords,1);
+                    // create a new polygon with the flipped coordinates and store
+                    // to the townEnvelope object under the key TOWNNAME
                     townEnvelopes[feature.properties.TOWNNAME] = L.polygon(latLngCoords);
                   }
                   catch (ex) {
@@ -126,9 +152,13 @@
                   }
                 },
                 style: function(feature) {
+                  // If no URLParam for a town was given show all town bounds
+                  // in a dark green border style
                   if (!town) {
                     return {color: '#009900',stroke: true}
                   }
+                  // If one town was given, and this feature is it, then highlight that town with
+                  // a bright green border, and light green transparent fill.
                   else if (feature.properties.TOWNNAME == town) {
                     return {
                       color: '#00CC00',
@@ -138,6 +168,10 @@
                       fillOpacity: 0.2
                     }
                   }
+                  // If one town was given and this feature is not that town,
+                  // then draw it with no border, and a dark transparent overlay
+                  // to sort of shadow it out, helping further highlight the town
+                  // that was given.
                   else {
                     return {
                       color: '#000000',
@@ -150,10 +184,18 @@
                 }
               }
             )
+            // Put the town boundaries on the map finally.
             townboundslayer.addTo(map);
-            
-            var featurePoly = townEnvelopes[town];
-            map.fitBounds(featurePoly.getBounds());
+            // If no town given zoom to fit all towns on map
+            if (!town) {
+              map.fitBounds(townboundslayer.getBounds());
+            }
+            else {
+              // if a town was given, this will try to pull up a polygon for it
+              var featurePoly = townEnvelopes[town];
+              // and zoom the map to fit that town's polygon
+              map.fitBounds(featurePoly.getBounds());
+            }
           }
         );
         
@@ -161,38 +203,7 @@
 
         // 🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥
         // The Firebase SDK is initialized and available here!
-        if (drawTrashDrops) {
-          firebase.firestore().collection("trashDrops").get().then(
-            (trashDropQuerySnapshot) => {
-              trashDropQuerySnapshot.forEach(
-                (doc) => {
-                  try {
-                    let trashDrop = doc.data();
-                    let loc = trashDrop['location'];
-                    let coords = loc.coordinates;
-                    let lat = coords.latitude;
-                    let lon = coords.longitude;
-                    //console.log(doc.id, " => ", trashDrop.bagCount,lat,lon);
-                    if (lat && lon) {
-                      L.circle(
-                        [lat,lon],
-                        {
-                          color: 'red',
-                          fillColor: '#FF0033',
-                          fillOpacity: '0.2',
-                          radius: 200 * (doc.data().bagCount % 100)
-                        }
-                      ).addTo(map);
-                    }
-                  }
-                  catch (ex) {
-                    console.log(ex);
-                  }
-                }
-              );
-            }
-          );
-        }
+        
         if (drawTeamAreas) {
           firebase.firestore().collection("teams").get().then(
             (querySnapshot) => {
@@ -212,6 +223,7 @@
                             {
                               color: '#009900',
                               dashArray: '8',
+                              weight: 1,
                               stroke: true,
                               opacity: 1,
 
@@ -226,6 +238,169 @@
                   }
                   catch (ex) {
                     console.log("problem drawing team: ", ex);
+                  }
+                }
+              );
+            }
+          );
+        }
+        if (drawCollectionSites) {
+          firebase.firestore().collection("trashCollectionSites").get().then(
+            (querySnapshot) => {
+              querySnapshot.forEach(
+                (siteDoc) => {
+                  try {
+                    let site = siteDoc.data();
+                    if (site.active) {
+                      let coords = site.coordinates;
+                      let lat = coords.latitude;
+                      let lon = coords.longitude;
+                      if (lat && lon) {
+                        L.circle(
+                          [lat,lon],
+                          {
+                            color: '#0000FF',
+                            dashArray: '10',
+                            weight: 1,
+                            stroke: true,
+                            opacity: 1,
+
+                            fillColor: '#000099',
+                            fillOpacity: '0.7',
+                            radius: 200 
+                          }
+                        ).addTo(map);
+                      }
+                    }
+                  }
+                  catch (ex) {
+                    console.log("problem drawing team: ", ex);
+                  }
+                }
+              );
+            }
+          );
+        }
+        if (drawSupplySites) {
+          firebase.firestore().collection("supplyDistributionSites").get().then(
+            (querySnapshot) => {
+              querySnapshot.forEach(
+                (siteDoc) => {
+                  try {
+                    let site = siteDoc.data();
+                    if (site.active) {
+                      let coords = site.coordinates;
+                      let lat = coords.latitude;
+                      let lon = coords.longitude;
+                      if (lat && lon) {
+                        L.circle(
+                          [lat,lon],
+                          {
+                            color: '#9900FF',
+                            dashArray: '10',
+                            weight: 1,
+                            stroke: true,
+                            opacity: 1,
+
+                            fillColor: '#990099',
+                            fillOpacity: '0.7',
+                            radius: 200 
+                          }
+                        ).addTo(map);
+                      }
+                    }
+                  }
+                  catch (ex) {
+                    console.log("problem drawing team: ", ex);
+                  }
+                }
+              );
+            }
+          );
+        }
+        if (drawTrashDrops) {
+          // Query the firestore collection "trashDrops"
+          firebase.firestore().collection("trashDrops").get().then(
+            (trashDropQuerySnapshot) => {
+              // For Each trashDrop...
+              trashDropQuerySnapshot.forEach(
+                (doc) => {
+                  // Some trashDrops have no coordinates, so
+                  // this first approach will fail for those.
+                  // trashDrops with no coords are probably associated
+                  // with a trash drop-off site instead, so we will need
+                  // to locate those and deal with those separately.
+                  try {
+                    let trashDrop = doc.data();
+                    let loc = trashDrop['location'];
+                    let coords = loc.coordinates;
+                    let lat = coords.latitude;
+                    let lon = coords.longitude;
+                    let collectionSite = trashDrop['collectionSiteId'];
+                    //console.log(doc.id, " => ", trashDrop.bagCount,lat,lon);
+                    const bagMultiplier = (bags) => {
+                      if (bags == 1) return 1;
+                      if (2 >= bags <= 10) return 3;
+                      if (11 >= bags <= 20) return 9;
+                      if (bags > 20) return 27;
+                    }
+                    if (!onlyTrashMarker && lat && lon) {
+                      L.circle(
+                        [lat,lon],
+                        {
+                          color: 'red',
+                          fillColor: '#FF0033',
+                          fillOpacity: '0.2',
+                          radius: 200 * bagMultiplier(doc.data().bagCount)
+                        }
+                      ).addTo(map);
+                    }
+                    else if (lat && lon && onlyTrashMarker) {
+                      L.circle(
+                        [lat,lon],
+                        {
+                          color: 'red',
+                          fillColor: '#FF0033',
+                          fillOpacity: '0.2',
+                          radius: 100
+                        }
+                      ).addTo(map);
+                    }
+                    else if (collectionSite) {
+                      firebase.firestore().doc("trashCollectionSites/" + collectionSite).get().then(
+                        (collectionSiteDoc) => {
+                          let collectionSiteData = collectionSiteDoc.data();
+                          let coords = collectionSiteData.coordinates;
+                          let lat = coords.latitude;
+                          let lon = coords.longitude;
+                          if (!onlyTrashMarker) {
+                            L.circle(
+                              [lat,lon],
+                              {
+                                color: 'red',
+                                fillColor: '#FF33FF',
+                                fillOpacity: '0.2',
+                                radius: 200 * bagMultiplier(doc.data().bagCount)
+                              }
+                            ).addTo(map);
+                          }
+                          else {
+                            L.circle(
+                              [lat,lon],
+                              {
+                                color: 'red',
+                                fillColor: '#FF33FF',
+                                fillOpacity: '0.2',
+                                radius: 200
+                              }
+                            ).addTo(map);
+                          }
+                        }
+                      );
+                    }
+                  }
+                  catch (ex) {
+                    console.log(ex);
                   }
                 }
               );
