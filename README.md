@@ -27,3 +27,13 @@ We still need some functionality to make this work well for the public.
 * Code for BTV Logo and attribution and link to our website
 * We need a legend to tell people what the heck the map symbols represent
 * The town name, when entered, currently must be ALL UPPERCASE because that is how the town name attribute is storing it in the GeoJSON. We should probably make it smart enough to accept different cases of town names.
+
+## Hosting
+The app is built to be hosted by Firebase (where it gets all its data anyway).
+The current URL is: https://greenupvtmap.web.app/
+It is currently bound to the production Green Up firestore.
+So to test and deploy this you need the Firebase CLI.
+Useful pages of docs:
+* Firebase Firestore data access: https://firebase.google.com/docs/firestore/query-data/get-data#web-version-9_5
+* Firebase hosting basics: https://firebase.google.com/docs/hosting#implementation_path
+* LeafLet map docs: https://leafletjs.com/SlavaUkraini/reference.html
