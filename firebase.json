@@ -1,0 +1,23 @@
+{
+  "hosting": [
+    {
+      "target": "guvtmap-dev",
+      "public": "public",
+      "ignore": [
+        "firebase.json",
+        "**/.*",
+        "**/node_modules/**"
+      ],
+      "rewrites": [
+        {
+          "source": "/bigben",
+          "function": "bigben"
+        },
+        {
+          "source": "**",
+          "destination": "/index.html"
+        }
+      ]
+    }
+  ]
+}

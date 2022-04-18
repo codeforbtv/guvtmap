@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+  integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+  crossorigin=""/>
+  <title>Welcome to Firebase Hosting</title>
+  
+  <!-- update the version number as needed -->
+  <script defer src="/__/firebase/9.6.11/firebase-app-compat.js"></script>
+  <!-- include only the Firebase features as you need -->
+  <script defer src="/__/firebase/9.6.11/firebase-auth-compat.js"></script>
+  <script defer src="/__/firebase/9.6.11/firebase-database-compat.js"></script>
+  <script defer src="/__/firebase/9.6.11/firebase-firestore-compat.js"></script>
+  <script defer src="/__/firebase/9.6.11/firebase-functions-compat.js"></script>
+  <script defer src="/__/firebase/9.6.11/firebase-messaging-compat.js"></script>
+  <script defer src="/__/firebase/9.6.11/firebase-storage-compat.js"></script>
+  <script defer src="/__/firebase/9.6.11/firebase-analytics-compat.js"></script>
+  <script defer src="/__/firebase/9.6.11/firebase-remote-config-compat.js"></script>
+  <script defer src="/__/firebase/9.6.11/firebase-performance-compat.js"></script>
+  <!-- 
+    initialize the SDK after all desired features are loaded, set useEmulator to false
+    to avoid connecting the SDK to running emulators.
+  -->
+  <script defer src="/__/firebase/init.js?useEmulator=true"></script>
+  <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+  integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+  crossorigin="">
+  </script>
+  <style media="screen">
+  html {width: 100%; height: 100%;}
+  body {width: 100%; height: 100%; background: #ECEFF1; color: rgba(0,0,0,0.87); font-family: Roboto, Helvetica, Arial, sans-serif; margin: 0; padding: 0; }
+  #message { background: white; max-width: 360px; margin: 100px auto 16px; padding: 32px 24px; border-radius: 3px; }
+  #message h2 { color: #ffa100; font-weight: bold; font-size: 16px; margin: 0 0 8px; }
+  #message h1 { font-size: 22px; font-weight: 300; color: rgba(0,0,0,0.6); margin: 0 0 16px;}
+  #message p { line-height: 140%; margin: 16px 0 24px; font-size: 14px; }
+  #message a { display: block; text-align: center; background: #039be5; text-transform: uppercase; text-decoration: none; color: white; padding: 16px; border-radius: 4px; }
+  #message, #message a { box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24); }
+  #load { color: rgba(0,0,0,0.4); text-align: center; font-size: 13px; }
+  @media (max-width: 600px) {
+    body, #message { margin-top: 0; background: white; box-shadow: none; }
+    body { border-top: 16px solid #ffa100; }
+  }
+  #map {
+    width: 100%; height: 100%;
+  }
+  </style>
+</head>
+<body>
+  <div id="map"></div>
+  <script type="module">
+    // Import the functions you need from the SDKs you need
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.11/firebase-app.js";
+    //var vtTownBounds = {};
+
+    // TODO: Add SDKs for Firebase products that you want to use
+    // https://firebase.google.com/docs/web/setup#available-libraries
+    
+    // Your web app's Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyBUicpls4kgf0-sRbEqIJorP7Vj3CCGTSg",
+      authDomain: "greenupvermont-dev.firebaseapp.com",
+      databaseURL: "https://greenupvermont-dev.firebaseio.com",
+      projectId: "greenupvermont-dev",
+      storageBucket: "greenupvermont-dev.appspot.com",
+      messagingSenderId: "447874135722",
+      appId: "1:447874135722:web:09438c19ba52b4e5de42d3"
+    };
+    
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+  </script>
+  <script>
+    document.addEventListener(
+      'DOMContentLoaded', 
+      function() {
+        const queryString = window.location.search;
+        console.log("QueryString:", queryString);
+        const urlParams = new URLSearchParams(queryString);
+        const town = urlParams.get('town');
+        const drawTrashDrops = urlParams.get('trashDrops');
+        const drawTeamAreas = urlParams.get('teamAreas');
+        const drawCollectionSites = urlParams.get('collectionSites');
+        const drawSupplySites = urlParams.get('supplySites');
+        console.log("Town:", town);
+        var map = L.map('map').setView([44.2601, -72.5754], 7);
+        var basemap = L.tileLayer(
+          'https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', 
+          {
+            attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+            maxZoom: 18,
+            id: 'mapbox/streets-v11',
+            tileSize: 512,
+            zoomOffset: -1,
+            accessToken: 'pk.eyJ1IjoibmZsb3VyaXNoIiwiYSI6ImNsMjB4MTZtaTEwd3MzanFyM21tN2s5cXMifQ.P7eQ4URoPV5OlhnQtHjCXA'
+          }
+        );
+        basemap.addTo(map);
+
+        var townboundslayer = {};
+        var townEnvelopes = {};
+        fetch("./vttowns.geojson").then(
+          response => {
+            return response.json();
+          }
+        )
+        .then(
+          json => {
+            console.log(json);
+            var vtTownBounds = json;
+
+            townboundslayer = L.geoJSON(
+              vtTownBounds,
+              {
+                onEachFeature: function(feature,layer) {
+                  layer._leaflet_id = feature.properties.TOWNNAME;
+                  try {
+                    var gjCoords = feature.geometry.coordinates;
+                    var latLngCoords = L.GeoJSON.coordsToLatLngs(gjCoords,1);
+                    townEnvelopes[feature.properties.TOWNNAME] = L.polygon(latLngCoords);
+                  }
+                  catch (ex) {
+                    console.log(ex);
+                  }
+                },
+                style: function(feature) {
+                  if (!town) {
+                    return {color: '#009900',stroke: true}
+                  }
+                  else if (feature.properties.TOWNNAME == town) {
+                    return {
+                      color: '#00CC00',
+                      stroke: true,
+                      fill: true,
+                      fillColor: '#00FF00',
+                      fillOpacity: 0.2
+                    }
+                  }
+                  else {
+                    return {
+                      color: '#000000',
+                      stroke: false,
+                      fill: true,
+                      fillColor: '#000000',
+                      fillOpacity: 0.5
+                    }
+                  }
+                }
+              }
+            )
+            townboundslayer.addTo(map);
+            
+            var featurePoly = townEnvelopes[town];
+            map.fitBounds(featurePoly.getBounds());
+          }
+        );
+        
+
+
+        // 🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥
+        // The Firebase SDK is initialized and available here!
+        if (drawTrashDrops) {
+          firebase.firestore().collection("trashDrops").get().then(
+            (trashDropQuerySnapshot) => {
+              trashDropQuerySnapshot.forEach(
+                (doc) => {
+                  try {
+                    let trashDrop = doc.data();
+                    let loc = trashDrop['location'];
+                    let coords = loc.coordinates;
+                    let lat = coords.latitude;
+                    let lon = coords.longitude;
+                    //console.log(doc.id, " => ", trashDrop.bagCount,lat,lon);
+                    if (lat && lon) {
+                      L.circle(
+                        [lat,lon],
+                        {
+                          color: 'red',
+                          fillColor: '#FF0033',
+                          fillOpacity: '0.2',
+                          radius: 200 * (doc.data().bagCount % 100)
+                        }
+                      ).addTo(map);
+                    }
+                  }
+                  catch (ex) {
+                    console.log(ex);
+                  }
+                }
+              );
+            }
+          );
+        }
+        if (drawTeamAreas) {
+          firebase.firestore().collection("teams").get().then(
+            (querySnapshot) => {
+              querySnapshot.forEach(
+                (teamDoc) => {
+                  try {
+                    let team = teamDoc.data();
+                    if (team.active) {
+                      let locs = team['locations'];
+                      locs.forEach((loc) => {
+                        let coords = loc.coordinates;
+                        let lat = coords.latitude;
+                        let lon = coords.longitude;
+                        if (lat && lon) {
+                          L.circle(
+                            [lat,lon],
+                            {
+                              color: '#009900',
+                              dashArray: '8',
+                              stroke: true,
+                              opacity: 1,
+
+                              fillColor: '#FF9900',
+                              fillOpacity: '0.7',
+                              radius: 100 
+                            }
+                          ).addTo(map);
+                        }
+                      });
+                    }
+                  }
+                  catch (ex) {
+                    console.log("problem drawing team: ", ex);
+                  }
+                }
+              );
+            }
+          );
+        }
+        //firebase.functions().httpsCallable('bigben')().then(() => { });
+        // firebase.messaging().requestPermission().then(() => { });
+        // firebase.storage().ref('/path/to/ref').getDownloadURL().then(() => { });
+        // firebase.analytics(); // call to activate
+        // firebase.analytics().logEvent('tutorial_completed');
+        // firebase.performance(); // call to activate
+        //
+        // 🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥
+      }
+    );
+  </script>
+        
+        
+      </body>
+      </html>
+      
