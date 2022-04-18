@@ -33,6 +33,8 @@ The app is built to be hosted by Firebase (where it gets all its data anyway).
 
 The current URL is: https://greenupvtmap.web.app/
 
+Try it like this: https://greenupvtmap.web.app/?town=RICHMOND&trashDrops=true&onlyTrashMarker=false&teamAreas=true&collectionSites=true&supplySites=true
+
 It is currently bound to the production Green Up firestore.
 
 So to test and deploy this you need the Firebase CLI.
