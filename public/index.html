@@ -2,747 +2,955 @@
 <html>
 
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
-    integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
-    crossorigin="" />
-  <title>Green Up Vermont Activity Map</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<!-- <link href="https://cdn.materialdesignicons.com/1.3.41/css/materialdesignicons.min.css" rel="stylesheet" type="text/css" /> -->
+	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+	<!-- <link href="https://cdn.jsdelivr.net/npm/@mdi/font@6.6.96/css/materialdesignicons.min.css" rel="stylesheet" type="text/css" /> -->
+	<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A==" crossorigin="" />
+	<title>Green Up Vermont Activity Map</title>
+	
+	<!-- update the version number as needed -->
+	<script defer src="/__/firebase/9.6.11/firebase-app-compat.js"></script>
+	<!-- include only the Firebase features as you need -->
+	<script defer src="/__/firebase/9.6.11/firebase-auth-compat.js"></script>
+	<script defer src="/__/firebase/9.6.11/firebase-database-compat.js"></script>
+	<script defer src="/__/firebase/9.6.11/firebase-firestore-compat.js"></script>
+	<script defer src="/__/firebase/9.6.11/firebase-functions-compat.js"></script>
+	<script defer src="/__/firebase/9.6.11/firebase-messaging-compat.js"></script>
+	<script defer src="/__/firebase/9.6.11/firebase-storage-compat.js"></script>
+	<script defer src="/__/firebase/9.6.11/firebase-analytics-compat.js"></script>
+	<script defer src="/__/firebase/9.6.11/firebase-remote-config-compat.js"></script>
+	<script defer src="/__/firebase/9.6.11/firebase-performance-compat.js"></script>
+	<!-- 
+		initialize the SDK after all desired features are loaded, set useEmulator to false
+		to avoid connecting the SDK to running emulators.
+	-->
+	<script defer src="/__/firebase/init.js?useEmulator=true"></script>
+	<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+	integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+	crossorigin=""></script>
+	<link href="./leaflet.icon-material.css" rel="stylesheet"/>
+	<script src="./leaflet.icon-material.js"></script>
 
-  <!-- update the version number as needed -->
-  <script defer src="/__/firebase/9.6.11/firebase-app-compat.js"></script>
-  <!-- include only the Firebase features as you need -->
-  <script defer src="/__/firebase/9.6.11/firebase-auth-compat.js"></script>
-  <script defer src="/__/firebase/9.6.11/firebase-database-compat.js"></script>
-  <script defer src="/__/firebase/9.6.11/firebase-firestore-compat.js"></script>
-  <script defer src="/__/firebase/9.6.11/firebase-functions-compat.js"></script>
-  <script defer src="/__/firebase/9.6.11/firebase-messaging-compat.js"></script>
-  <script defer src="/__/firebase/9.6.11/firebase-storage-compat.js"></script>
-  <script defer src="/__/firebase/9.6.11/firebase-analytics-compat.js"></script>
-  <script defer src="/__/firebase/9.6.11/firebase-remote-config-compat.js"></script>
-  <script defer src="/__/firebase/9.6.11/firebase-performance-compat.js"></script>
-  <!-- 
-    initialize the SDK after all desired features are loaded, set useEmulator to false
-    to avoid connecting the SDK to running emulators.
-  -->
-  <script defer src="/__/firebase/init.js?useEmulator=true"></script>
-  <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
-    integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
-    crossorigin="">
-    </script>
-  <style media="screen">
-    html {
-      width: 100%;
-      height: 100%;
-    }
+<script type="text/javascript" src="Leaflet.Icon.Glyph.js"></script>
 
-    body {
-      width: 100%;
-      height: 100%;
-      background: #ECEFF1;
-      color: rgba(0, 0, 0, 0.87);
-      font-family: Roboto, Helvetica, Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-    }
 
-    #message {
-      background: white;
-      max-width: 360px;
-      margin: 100px auto 16px;
-      padding: 32px 24px;
-      border-radius: 3px;
-    }
+<style media="screen">
+	html {
+		width: 100%;
+		height: 100%;
+	}
+	
+	body {
+		width: 100%;
+		height: 100%;
+		background: #ECEFF1;
+		color: rgba(0, 0, 0, 0.87);
+		font-family: Roboto, Helvetica, Arial, sans-serif;
+		margin: 0;
+		padding: 0;
+	}
+	
+	#message {
+		background: white;
+		max-width: 360px;
+		margin: 100px auto 16px;
+		padding: 32px 24px;
+		border-radius: 3px;
+	}
+	
+	#message h2 {
+		color: #ffa100;
+		font-weight: bold;
+		font-size: 16px;
+		margin: 0 0 8px;
+	}
+	
+	#message h1 {
+		font-size: 22px;
+		font-weight: 300;
+		color: rgba(0, 0, 0, 0.6);
+		margin: 0 0 16px;
+	}
+	
+	#message p {
+		line-height: 140%;
+		margin: 16px 0 24px;
+		font-size: 14px;
+	}
+	
+	#message a {
+		display: block;
+		text-align: center;
+		background: #039be5;
+		text-transform: uppercase;
+		text-decoration: none;
+		color: white;
+		padding: 16px;
+		border-radius: 4px;
+	}
+	
+	#message,
+	#message a {
+		box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+	}
+	
+	#load {
+		color: rgba(0, 0, 0, 0.4);
+		text-align: center;
+		font-size: 13px;
+	}
+	
+	@media (max-width: 600px) {
+		
+		body,
+		#message {
+			margin-top: 0;
+			background: white;
+			box-shadow: none;
+		}
+		
+		body {
+			border-top: 16px solid #ffa100;
+		}
+	}
+	
+	#map {
+		width: 100%;
+		
+		display: block;
+	}
+	
+	.map-full {
+		height: 100% !important;
+	}
+	
+	.map-regular {
+		/* height: calc(100% - 50px); */
+		height: 100% !important;
+	}
+	
+	#toolbar {
+		overflow: hidden;
+		background: #007911;
+		position: absolute;
+		right: 0;
+		top: 0;
+		z-index: 9999;
+		padding: 10px;
+		border: 4px solid green;
+	}
+	
+	#toolbar-logo {
+		flex: 1 1 auto;
+		height: 50px;
+	}
+	
+	.toolbar-toggles {
+		text-align: left;
+		padding-top: 5px;
+		color: white;
+		font-size: 16px;
+		display: block;
+		width: 320px;
+	}
+	
+	.hidden {
+		top: -330px !important;
+	}
 
-    #message h2 {
-      color: #ffa100;
-      font-weight: bold;
-      font-size: 16px;
-      margin: 0 0 8px;
-    }
+	.collectionSiteIcon {
+		background-color: rgba(255,255,255,0.7);
+		border: 1px solid black;
+		width: 26px;
+		height: 26px;
+		border-radius: 13px;
+		z-index: 9980 !important;
+	}
 
-    #message h1 {
-      font-size: 22px;
-      font-weight: 300;
-      color: rgba(0, 0, 0, 0.6);
-      margin: 0 0 16px;
-    }
+	.teamAreaIcon {
+		background-color: rgba(255, 166, 0, 0.7);
+		border: 1px solid black;
+		width: 26px;
+		height: 26px;
+		border-radius: 13px;
+		z-index: 9985 !important;
+	}
 
-    #message p {
-      line-height: 140%;
-      margin: 16px 0 24px;
-      font-size: 14px;
-    }
+	.trashDropIcon {
+		background-color: rgba(0, 255, 38, 0.7);
+		border: 1px solid black;
+		width: 26px;
+		height: 26px;
+		border-radius: 13px;
+		z-index: 9990 !important;
+	}
 
-    #message a {
-      display: block;
-      text-align: center;
-      background: #039be5;
-      text-transform: uppercase;
-      text-decoration: none;
-      color: white;
-      padding: 16px;
-      border-radius: 4px;
-    }
+	.trashDropImpactIcon {
+		background-color: rgba(255, 0, 0, 0.3);
+		border: 1px solid red;
+		border-radius: 50%;
+		/* width: 100px;
+		height: 100px; */
+		z-index: 9999 !important;
+		pointer-events: none !important;
+	}
 
-    #message,
-    #message a {
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
-    }
+	.supplySiteIcon {
+		background-color: rgba(255, 255, 255, 0.7);
+		border: 1px solid black;
+		width: 26px;
+		height: 26px;
+		border-radius: 13px;
+		z-index: 9980 !important;
+	}
+	.iconControlBlock {
+		display: block;
+	}
 
-    #load {
-      color: rgba(0, 0, 0, 0.4);
-      text-align: center;
-      font-size: 13px;
-    }
+	.iconArea {
+		display: inline-block;
+		width: 45px;
+		text-align: center;
+		vertical-align: middle;
+	}
+	.controlArea {
+		display: inline-block;
+		text-align: center;
+		vertical-align: middle;
+	}
 
-    @media (max-width: 600px) {
-
-      body,
-      #message {
-        margin-top: 0;
-        background: white;
-        box-shadow: none;
-      }
-
-      body {
-        border-top: 16px solid #ffa100;
-      }
-    }
-
-    #map {
-      width: 100%;
-      
-      display: block;
-    }
-
-    .map-full {
-      height: 100% !important;
-    }
-
-    .map-regular {
-      height: calc(100% - 50px);
-    }
-
-    #toolbar {
-      height: 50px;
-      width: calc(100% - 20px);
-      overflow: hidden;
-      display: block;
-      background: #007911;
-      padding-left: 10px;
-      padding-right: 10px;
-      display: flex;
-      flex-direction: row;
-    }
-
-    #toolbar-logo {
-      flex: 1 1 auto;
-      height: 50px;
-    }
-
-    .toolbar-toggles {
-      flex: 1 1 auto;
-      height: 30px;
-      text-align: left;
-      padding-top: 5px;
-      color: white;
-      font-size: 16px;
-    }
-
-    .hidden {
-      display: none !important;
-    }
-  </style>
+	.c4btvlogo {
+		position: absolute;
+		bottom: 20px;
+		right: 10px;
+		height: 75px;
+		width: 75px;
+		padding: 5px;
+		background-color: rgba(0,0,0,0.7);
+		z-index: 9999;
+		border-radius: 10px;
+	}
+	.guvtlogo {
+		position: absolute;
+		bottom: 20px;
+		left: 10px;
+		height: 75px;
+		padding: 5px;
+		z-index: 9999;
+		background-color: rgba(0,0,0,0.7);
+		border-radius: 10px;
+	}
+</style>
 </head>
 
 <body>
-  <div id="toolbar">
-    <div id="toolbar-logo">
-      <img src="https://greenupvermont.org/wp-content/uploads/2021/02/GU-Hor-web-logo-green-white.png"
-        style="height: 47px;" />
-    </div>
-    <div class="toolbar-toggles">
-      <input type="text" id="townFilter" name="townFilter" size="30" maxlength="100" />
-      <label for="townFilter">Filter Town</label><br/>
-      <input type="button" id="loadTownFilter" name="loadTownFilter" value="Zoom To Town"/>
-    </div>
-    <div class="toolbar-toggles">
-      <input type="checkbox" id="trashdropsToggle" name="trashdropsToggle" value="true" />
-      <label for="trashdropsToggle">Show Trash Drops</label><br/>
-      <input type="checkbox" id="scaleTrashMarkers" name="scaleTrashMarkers" value="true" />
-      <label for="scaleTrashMarkers">Scale Trash Markers?</label>
-    </div>
-    <div class="toolbar-toggles">
-      <input type="checkbox" id="teamareasToggle" name="teamareasToggle" value="true" />
-      <label for="teamareasToggle">Show Team Areas</label>
-    </div>
-    <div class="toolbar-toggles">
-      <input type="checkbox" id="collectionsitesToggle" name="collectionsitesToggle" value="true" />
-      <label for="collectionsitesToggle">Show Trash Collection Sites</label>
-    </div>
-    <div class="toolbar-toggles">
-      <input type="checkbox" id="supplysitesToggle" name="supplysitesToggle" value="true" />
-      <label for="supplysitesToggle">Show Supplies Pickup Sites</label>
-    </div>
-    <div class="toolbar-toggles">
-      <input type="checkbox" id="autoRefreshToggle" name="autoRefreshToggle" value="true" />
-      <label for="autoRefreshToggle">Auto Refresh Each Minute</label>
-    </div>
-    <div class="toolbar-toggles">
-      <input type="checkbox" id="toolbarToggle" name="toolbarToggle" value="true" />
-      <label for="toolbarToggle">Hide This Toolbar</label>
-    </div>
-  </div>
-  <div id="map" class="map-regular"></div>
-  <script type="module">
-    // Import the functions you need from the SDKs you need
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.11/firebase-app.js";
-    import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.6.11/firebase-analytics.js";
-
-    // TODO: Add SDKs for Firebase products that you want to use
-    // https://firebase.google.com/docs/web/setup#available-libraries
-
-    // Your web app's Firebase configuration
-    const firebaseConfig = {
-      apiKey: "AIzaSyCOrCzO_pJ3_OVw3ScpwP2Fl6-h4wJ8IOA",
-      authDomain: "greenupvermont-de02b.firebaseapp.com",
-      databaseURL: "https://greenupvermont-de02b.firebaseio.com",
-      projectId: "greenupvermont-de02b",
-      storageBucket: "greenupvermont-de02b.appspot.com",
-      messagingSenderId: "439621369113",
-      appId: "1:439621369113:web:cf3fcd33eae9ed37d19988",
-      measurementId: "G-838B67JHF2"
-    };
-
-    // Initialize Firebase
-    const app = initializeApp(firebaseConfig);
-  </script>
-  <script>
-    document.addEventListener(
-      'DOMContentLoaded',
-      function () {
-        // Parsing the URL params to set some default state
-        const queryString = window.location.search;
-        //console.log("QueryString:", queryString);
-        const mapURL = new URL(window.location);
-        //var urlParams = new URLSearchParams(queryString);
-        var town = mapURL.searchParams.get('town');
-        var drawTrashDrops = String(mapURL.searchParams.get('trashDrops')).toLowerCase() == "true";
-        var drawTeamAreas = String(mapURL.searchParams.get('teamAreas')).toLowerCase() == "true";
-        var drawCollectionSites = String(mapURL.searchParams.get('collectionSites')).toLowerCase() == "true";
-        var drawSupplySites = String(mapURL.searchParams.get('supplySites')).toLowerCase() == "true";
-        var onlyTrashMarker = String(mapURL.searchParams.get('onlyTrashMarker')).toLowerCase() == "true";
-        var hideToolbar = String(mapURL.searchParams.get('hideToolbar')).toLowerCase() == "true";
-        var autoRefresh = String(mapURL.searchParams.get('autoRefresh')).toLowerCase() == "true";
-
-        const cb_trashdropsToggle = document.querySelector('#trashdropsToggle');
-        const cb_teamareasToggle = document.querySelector('#teamareasToggle');
-        const cb_collectionsitesToggle = document.querySelector('#collectionsitesToggle');
-        const cb_supplysitesToggle = document.querySelector('#supplysitesToggle');
-        const cb_scaleTrashMarkers = document.querySelector('#scaleTrashMarkers');
-        const cb_toolbarToggle = document.querySelector('#toolbarToggle');
-        const cb_autoRefresh = document.querySelector('#autoRefreshToggle');
-        const tb_townFilter = document.querySelector('#townFilter');
-        const btn_loadTownFilter = document.querySelector('#loadTownFilter');
-        if (drawTrashDrops) {cb_trashdropsToggle.checked = true;}
-        if (drawTeamAreas) {cb_teamareasToggle.checked = true;}
-        if (drawCollectionSites) {cb_collectionsitesToggle.checked = true;}
-        if (drawSupplySites) {cb_supplysitesToggle.checked = true;}
-        if (onlyTrashMarker) {cb_scaleTrashMarkers.checked = true;}
-        if (hideToolbar) {cb_toolbarToggle.checked = true;}
-        if (town) {tb_townFilter.value = town;}
-        if (autoRefresh) {
-          cb_autoRefresh.checked = true;
-          doAutoRefresh();
-        }
-
-        cb_trashdropsToggle.addEventListener('click', (event) => {
-            //alert("Team Areas: " + cb_teamareasToggle.checked);
-            drawTrashDrops = cb_trashdropsToggle.checked;
-            mapURL.searchParams.set('trashDrops',drawTrashDrops);
-            history.pushState({}, null, mapURL)
-            renderTrashDrops();
-        });
-        cb_teamareasToggle.addEventListener('click', (event) => {
-            drawTeamAreas = cb_teamareasToggle.checked;
-            mapURL.searchParams.set('teamAreas',drawTeamAreas);
-            history.pushState({}, null, mapURL)
-            renderTeamAreas();
-        });
-        cb_collectionsitesToggle.addEventListener('click', (event) => {
-            drawCollectionSites = cb_collectionsitesToggle.checked;
-            mapURL.searchParams.set('collectionSites',drawCollectionSites);
-            history.pushState({}, null, mapURL)
-            renderCollectionSites();
-        });
-        cb_supplysitesToggle.addEventListener('click', (event) => {
-            drawSupplySites = cb_supplysitesToggle.checked;
-            mapURL.searchParams.set('supplySites',drawSupplySites);
-            history.pushState({}, null, mapURL);
-            renderSupplySites();
-        });
-        cb_scaleTrashMarkers.addEventListener('click', (event) => {
-            onlyTrashMarker = cb_scaleTrashMarkers.checked;
-            mapURL.searchParams.set('onlyTrashMarker',onlyTrashMarker);
-            history.pushState({}, null, mapURL);
-            renderTrashDrops();
-        });
-        var refreshIntervalObject = {};
-        function clearAutoRefresh() {
-          window.clearInterval(refreshIntervalObject);
-        }
-        cb_autoRefresh.addEventListener('click', (event) => {
-            autoRefresh = cb_autoRefresh.checked;
-            mapURL.searchParams.set('autoRefresh',autoRefresh);
-            history.pushState({}, null, mapURL);
-            if (autoRefresh) {
-              doAutoRefresh()
-            }
-            if (!autoRefresh) {
-              clearAutoRefresh();
-            }
-        });
-        cb_toolbarToggle.addEventListener('click', (event) => {
-            hideToolbar = cb_toolbarToggle.checked;
-            mapURL.searchParams.set('hideToolbar',hideToolbar);
-            history.pushState({}, null, mapURL);
-            setToolbarVisibility();
-        });
-        tb_townFilter.addEventListener('change', (event) => {
-           town = tb_townFilter.value;
-           mapURL.searchParams.set('town',town);
-           history.pushState({}, null, mapURL);
-        });
-        tb_townFilter.addEventListener('change', (event) => {
-           town = (tb_townFilter.value).toUpperCase();
-           mapURL.searchParams.set('town',town);
-           history.pushState({}, null, mapURL);
-        });
-        btn_loadTownFilter.addEventListener('click', (event) => {
-          town = (tb_townFilter.value).toUpperCase();
-           mapURL.searchParams.set('town',town);
-           history.pushState({}, null, mapURL);
-          renderTowns();
-        });
-
-        function setToolbarVisibility() {
-          let toolbarElement = document.querySelector("#toolbar");
-          let mapElement = document.querySelector("#map");
-          hideToolbar ? toolbarElement.classList.add("hidden") : toolbarElement.classList.remove("hidden");
-          hideToolbar ? mapElement.classList.add("map-full") : mapElement.classList.remove("map-full");
-        }
-        
-        setToolbarVisibility();
-
-        // Get the map initialized
-        var map = L.map('map').setView([44.2601, -72.5754], 7);
-        var basemap = L.tileLayer(
-          'https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}',
-          {
-            attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
-            maxZoom: 18,
-            minZoom: 7,
-            id: 'mapbox/streets-v11',
-            tileSize: 512,
-            zoomOffset: -1,
-            accessToken: 'pk.eyJ1IjoibmZsb3VyaXNoIiwiYSI6ImNsMjQzbno1bjFxZzUza21pdjJ4eWdjZnYifQ.5s3l2AhlQkNDea21n4N8Sg'
-          }
-        );
-        basemap.addTo(map);
-        // With the way Leaflet works, it is helpful to keep track of the layer infos
-        // separate from the effort of adding them to the map.
-        var townboundslayer = {};
-        var townEnvelopes = {};
-        var townJSON = {};
-
-        // Get a list of polygon GeoJSON data for all town boundaries in VT.
-        fetch("./vttowns.geojson").then(
-          response => {
-            return response.json();
-          }
-        )
-          // Then add them to the Leaflet map
-          .then(
-            json => {
-              townJSON = json;
-              renderTowns();
-            }
-          );
-        
-        function renderTowns() {
-          map.removeLayer(townboundslayer);
-          var vtTownBounds = townJSON;
-
-          townboundslayer = L.geoJSON(
-            vtTownBounds,
-            {
-              // For each feature that is brought in ... each town boundary ...
-              // We need to flip its coordinates and store the polygon to our
-              // secondary list of such polygons by town name. This is because
-              // GeoJSON specifies storing position as [Long,Lat] and Leaflet
-              // uses [Lat,Long]. But this also is where we copy the polygons
-              // to the townEnvelopes array so we can zoom to them later, based
-              // on their name.
-              onEachFeature: function (feature, layer) {
-                // This is probably not necessary but since each VT Town name is unique
-                // they can be used to give each poly on the map an ID of the town name.
-                layer._leaflet_id = feature.properties.TOWNNAME;
-                // Some of the town polys were not importing lat/long properly,
-                // so this is in a try/catch.
-                try {
-                  // Get the GeoJSON coordinates (i.e., [long,lat])
-                  var gjCoords = feature.geometry.coordinates;
-                  // Leaflet function call to flip the coordinates
-                  var latLngCoords = L.GeoJSON.coordsToLatLngs(gjCoords, 1);
-                  // create a new polygon with the flipped coordinates and store
-                  // to the townEnvelope object under the key TOWNNAME
-                  townEnvelopes[feature.properties.TOWNNAME] = L.polygon(latLngCoords);
-                }
-                catch (ex) {
-                  console.log(ex);
-                }
-              },
-              style: function (feature) {
-                // If no URLParam for a town was given show all town bounds
-                // in a dark green border style
-                if (!town) {
-                  return { color: '#009900', stroke: true }
-                }
-                // If one town was given, and this feature is it, then highlight that town with
-                // a bright green border, and light green transparent fill.
-                else if (feature.properties.TOWNNAME == town) {
-                  return {
-                    color: '#00CC00',
-                    stroke: true,
-                    fill: true,
-                    fillColor: '#00FF00',
-                    fillOpacity: 0.2
-                  }
-                }
-                // If one town was given and this feature is not that town,
-                // then draw it with no border, and a dark transparent overlay
-                // to sort of shadow it out, helping further highlight the town
-                // that was given.
-                else {
-                  return {
-                    color: '#000000',
-                    stroke: false,
-                    fill: true,
-                    fillColor: '#000000',
-                    fillOpacity: 0.5
-                  }
-                }
-              }
-            }
-          )
-          // Put the town boundaries on the map finally.
-          townboundslayer.addTo(map);
-          zoomToTown();
-          renderTeamAreas();
-          renderCollectionSites();
-          renderSupplySites();
-          renderTrashDrops();
-        }
-
-        function zoomToTown() {
-          // If no town given zoom to fit all towns on map
-          if (!town) {
-            map.fitBounds(townboundslayer.getBounds());
-          }
-          else {
-            // if a town was given, this will try to pull up a polygon for it
-            var featurePoly = townEnvelopes[town];
-            // and zoom the map to fit that town's polygon
-            map.fitBounds(featurePoly.getBounds());
-          }
-        }
-
-        // 🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥
-        // The Firebase SDK is initialized and available here!
-
-        var teamAreasMarkers = [];
-        function renderTeamAreas() {
-          teamAreasMarkers.forEach(marker => {
-            map.removeLayer(marker);
-          });
-          teamAreasMarkers = [];
-          if (drawTeamAreas) {
-            firebase.firestore().collection("teams").get().then(
-              (querySnapshot) => {
-                querySnapshot.forEach(
-                  (teamDoc) => {
-                    try {
-                      let team = teamDoc.data();
-                      if (team.active) {
-                        let locs = team['locations'];
-                        locs.forEach((loc) => {
-                          let coords = loc.coordinates;
-                          let lat = coords.latitude;
-                          let lon = coords.longitude;
-                          if (lat && lon) {
-                            let newMarker = L.circle(
-                              [lat, lon],
-                              {
-                                color: '#009900',
-                                dashArray: '8',
-                                weight: 1,
-                                stroke: true,
-                                opacity: 1,
-
-                                fillColor: '#FF9900',
-                                fillOpacity: '0.7',
-                                radius: 100
-                              }
-                            );
-                            teamAreasMarkers.push(newMarker);
-                            newMarker.addTo(map);
-                          }
-                        });
-                      }
-                    }
-                    catch (ex) {
-                      console.log("problem drawing team: ", ex);
-                    }
-                  }
-                );
-              }
-            );
-          }
-        }
-        
-        var collectionSitesMarkers = [];
-        function renderCollectionSites() {
-          collectionSitesMarkers.forEach(marker => {
-            map.removeLayer(marker);
-          });
-          collectionSitesMarkers = [];
-          if (drawCollectionSites) {
-            firebase.firestore().collection("trashCollectionSites").get().then(
-              (querySnapshot) => {
-                querySnapshot.forEach(
-                  (siteDoc) => {
-                    try {
-                      let site = siteDoc.data();
-                      if (site.active) {
-                        let coords = site.coordinates;
-                        let lat = coords.latitude;
-                        let lon = coords.longitude;
-                        if (lat && lon) {
-                          let newMarker = L.circle(
-                            [lat, lon],
-                            {
-                              color: '#0000FF',
-                              dashArray: '10',
-                              weight: 1,
-                              stroke: true,
-                              opacity: 1,
-
-                              fillColor: '#000099',
-                              fillOpacity: '0.7',
-                              radius: 200
-                            }
-                          );
-                          collectionSitesMarkers.push(newMarker);
-                          newMarker.addTo(map);
-                        }
-                      }
-                    }
-                    catch (ex) {
-                      console.log("problem drawing team: ", ex);
-                    }
-                  }
-                );
-              }
-            );
-          }
-        }
-        
-        var supplySitesMarkers = [];
-        function renderSupplySites() {
-          supplySitesMarkers.forEach(marker => {
-            map.removeLayer(marker);
-          });
-          supplySitesMarkers = [];
-          if (drawSupplySites) {
-            firebase.firestore().collection("supplyDistributionSites").get().then(
-              (querySnapshot) => {
-                querySnapshot.forEach(
-                  (siteDoc) => {
-                    try {
-                      let site = siteDoc.data();
-                      if (site.active) {
-                        let coords = site.coordinates;
-                        let lat = coords.latitude;
-                        let lon = coords.longitude;
-                        if (lat && lon) {
-                          let newMarker = L.circle(
-                            [lat, lon],
-                            {
-                              color: '#9900FF',
-                              dashArray: '10',
-                              weight: 1,
-                              stroke: true,
-                              opacity: 1,
-
-                              fillColor: '#990099',
-                              fillOpacity: '0.7',
-                              radius: 200
-                            }
-                          );
-                          supplySitesMarkers.push(newMarker);
-                          newMarker.addTo(map);
-                        }
-                      }
-                    }
-                    catch (ex) {
-                      console.log("problem drawing team: ", ex);
-                    }
-                  }
-                );
-              }
-            );
-          }
-        }
-        
-        var trashDropMarkers = [];
-        function renderTrashDrops() {
-          trashDropMarkers.forEach(marker => {
-            map.removeLayer(marker);
-          });
-          trashDropMarkers = [];
-          if (drawTrashDrops) {
-            // Query the firestore collection "trashDrops"
-            firebase.firestore().collection("trashDrops").get().then(
-              (trashDropQuerySnapshot) => {
-                // For Each trashDrop...
-                trashDropQuerySnapshot.forEach(
-                  (doc) => {
-                    // Some trashDrops have no coordinates, so
-                    // this first approach will fail for those.
-                    // trashDrops with no coords are probably associated
-                    // with a trash drop-off site instead, so we will need
-                    // to locate those and deal with those separately.
-                    try {
-                      let trashDrop = doc.data();
-                      let loc = trashDrop['location'];
-                      let coords = loc.coordinates;
-                      let lat = coords.latitude;
-                      let lon = coords.longitude;
-                      let collectionSite = trashDrop['collectionSiteId'];
-                      //console.log(doc.id, " => ", trashDrop.bagCount,lat,lon);
-                      const bagMultiplier = (bags) => {
-                        if (bags == 1) return 1;
-                        if (2 >= bags <= 10) return 3;
-                        if (11 >= bags <= 20) return 9;
-                        if (bags > 20) return 27;
-                      }
-                      if (!onlyTrashMarker && lat && lon) {
-                        let newMarker = L.circle(
-                          [lat, lon],
-                          {
-                            color: 'red',
-                            fillColor: '#FF0033',
-                            fillOpacity: '0.2',
-                            radius: 200 * bagMultiplier(doc.data().bagCount)
-                          }
-                        );
-                        trashDropMarkers.push(newMarker);
-                        newMarker.addTo(map);
-                      }
-                      else if (lat && lon && onlyTrashMarker) {
-                        let newMarker = L.circle(
-                          [lat, lon],
-                          {
-                            color: 'red',
-                            fillColor: '#FF0033',
-                            fillOpacity: '0.2',
-                            radius: 100
-                          }
-                        );
-                        trashDropMarkers.push(newMarker);
-                        newMarker.addTo(map);
-                      }
-                      else if (collectionSite) {
-                        firebase.firestore().doc("trashCollectionSites/" + collectionSite).get().then(
-                          (collectionSiteDoc) => {
-                            let collectionSiteData = collectionSiteDoc.data();
-                            let coords = collectionSiteData.coordinates;
-                            let lat = coords.latitude;
-                            let lon = coords.longitude;
-                            if (!onlyTrashMarker) {
-                              let newMarker = L.circle(
-                                [lat, lon],
-                                {
-                                  color: 'red',
-                                  fillColor: '#FF33FF',
-                                  fillOpacity: '0.2',
-                                  radius: 200 * bagMultiplier(doc.data().bagCount)
-                                }
-                              );
-                              trashDropMarkers.push(newMarker);
-                              newMarker.addTo(map);
-                            }
-                            else {
-                              let newMarker = L.circle(
-                                [lat, lon],
-                                {
-                                  color: 'red',
-                                  fillColor: '#FF33FF',
-                                  fillOpacity: '0.2',
-                                  radius: 200
-                                }
-                              );
-                              trashDropMarkers.push(newMarker);
-                              newMarker.addTo(map);
-                            }
-                          }
-                        );
-                      }
-                    }
-                    catch (ex) {
-                      console.log(ex);
-                    }
-                  }
-                );
-              }
-            );
-          }
-        }
-        
-        function doAutoRefresh() {
-          if (autoRefresh) {
-            console.log("Starting auto-refreshing");
-            refreshIntervalObject = setInterval(() => {
-              console.log("auto-refreshing");
-              renderTeamAreas();
-              renderCollectionSites();
-              renderSupplySites();
-              renderTrashDrops();
-            }, 60000);
-          }
-        }
-
-        
-
-        //firebase.functions().httpsCallable('bigben')().then(() => { });
-        // firebase.messaging().requestPermission().then(() => { });
-        // firebase.storage().ref('/path/to/ref').getDownloadURL().then(() => { });
-        // firebase.analytics(); // call to activate
-        // firebase.analytics().logEvent('tutorial_completed');
-        // firebase.performance(); // call to activate
-        //
-        // 🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥
-      
-        // renderTeamAreas();
-        // renderCollectionSites();
-        // renderSupplySites();
-        // renderTrashDrops();
-      }
-    );
-  </script>
-
-
+	<div id="toolbar">
+		<div id="toolbar-logo">
+			<img src="https://greenupvermont.org/wp-content/uploads/2021/02/GU-Hor-web-logo-green-white.png"
+			style="height: 47px;" />
+		</div>
+		<div class="toolbar-toggles">
+			<input type="text" id="townFilter" name="townFilter" size="30" maxlength="100" />
+			<label for="townFilter">Filter Town</label><br/>
+			<input type="button" id="loadTownFilter" name="loadTownFilter" value="Zoom To Town"/>
+		</div>
+		<div class="toolbar-toggles">
+			<div class="iconControlBlock">
+				<div class="iconArea">
+					<img src="./TrashDrop.png"/>
+				</div>
+				<div class="controlArea">
+					<input type="checkbox" id="trashdropsToggle" name="trashdropsToggle" value="true" />
+					<label for="trashdropsToggle">Show Trash Drops</label><br/>
+				</div>
+			</div>
+			<div class="iconControlBlock">
+				<div class="iconArea">
+					<img src="./ImpactTrash.png"/>
+				</div>
+				<div class="controlArea">
+					<input type="checkbox" id="scaleTrashMarkers" name="scaleTrashMarkers" value="true" />
+					<label for="scaleTrashMarkers">Hide Trash Impact Rings</label>
+				</div>
+			</div>
+		</div>
+		<div class="toolbar-toggles">
+			<div class="iconControlBlock">
+				<div class="iconArea">
+					<img src="./TeamArea.png"/>
+				</div>
+				<div class="controlArea">
+					<input type="checkbox" id="teamareasToggle" name="teamareasToggle" value="true" />
+					<label for="teamareasToggle">Show Team Areas</label>
+				</div>
+			</div>
+		</div>
+		<div class="toolbar-toggles">
+			<div class="iconControlBlock">
+				<div class="iconArea">
+					<img src="./TrashCollect.png"/>
+				</div>
+				<div class="controlArea">
+					<input type="checkbox" id="collectionsitesToggle" name="collectionsitesToggle" value="true" />
+					<label for="collectionsitesToggle">Show Trash Collection Sites</label>
+				</div>
+			</div>
+		</div>
+		<div class="toolbar-toggles">
+			<div class="iconControlBlock">
+				<div class="iconArea">
+					<img src="./SupplySite.png"/>
+				</div>
+				<div class="controlArea">
+					<input type="checkbox" id="supplysitesToggle" name="supplysitesToggle" value="true" />
+					<label for="supplysitesToggle">Show Supplies Pickup Sites</label>
+				</div>
+			</div>
+		</div>
+		<div class="toolbar-toggles">
+			<input type="checkbox" id="autoRefreshToggle" name="autoRefreshToggle" value="true" />
+			<label for="autoRefreshToggle">Auto Refresh Each Minute</label>
+		</div>
+		<div class="toolbar-toggles">
+			<input type="checkbox" id="toolbarToggle" name="toolbarToggle" value="true" />
+			<label for="toolbarToggle">Hide This Toolbar</label>
+		</div>
+	</div>
+	<div class="c4btvlogo">
+		<a href="https://www.codeforbtv.org" target="_blank">
+			<img src="./c4btv_white.png" style="height: 75px; width: 75px;"/>
+		</a>
+	</div>
+	<div class="guvtlogo">
+		<a href="https://www.greenupvermont.org" target="_blank">
+			<img src="https://greenupvermont.org/wp-content/uploads/2021/02/GU-Hor-web-logo-green-white.png" style="height: 75px;"/>
+		</a>
+	</div>
+	<div id="map" class="map-regular"></div>
+	<script type="module">
+		// Import the functions you need from the SDKs you need
+		import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.11/firebase-app.js";
+		import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.6.11/firebase-analytics.js";
+		
+		// TODO: Add SDKs for Firebase products that you want to use
+		// https://firebase.google.com/docs/web/setup#available-libraries
+		
+		// Your web app's Firebase configuration
+		const firebaseConfig = {
+			apiKey: "AIzaSyCOrCzO_pJ3_OVw3ScpwP2Fl6-h4wJ8IOA",
+			authDomain: "greenupvermont-de02b.firebaseapp.com",
+			databaseURL: "https://greenupvermont-de02b.firebaseio.com",
+			projectId: "greenupvermont-de02b",
+			storageBucket: "greenupvermont-de02b.appspot.com",
+			messagingSenderId: "439621369113",
+			appId: "1:439621369113:web:cf3fcd33eae9ed37d19988",
+			measurementId: "G-838B67JHF2"
+		};
+		
+		// Initialize Firebase
+		const app = initializeApp(firebaseConfig);
+	</script>
+	<script>
+		var trashDropIcon = L.divIcon(
+			{
+				className: 'trashDropIcon',
+				iconSize: [26,26],
+				html: '<svg style="width:26px;height:26px" viewBox="0 0 24 24"><path fill="currentColor" d="M16,9C20,11 21,18 21,18C21,18 22,22 16,22C10,22 8,22 8,22C2,22 3,18 3,18C3,18 4,11 8,9M14,4L12,2L10,4L6,2L8,7H16L18,2L14,4Z" /></svg>'
+			}
+		);
+		var teamAreaIcon = L.divIcon(
+			{
+				className: 'teamAreaIcon',
+				iconSize: [26,26],
+				html: '<svg style="width:26px;height:26px" viewBox="0 0 512 512"><path d="M482.716,0L210.844,271.873c-12.026-8.15-26.195-12.538-41.045-12.538c-4.9,0-9.727,0.477-14.428,1.409 c-14.101,2.797-27.064,9.689-37.459,20.084L0,398.739L113.261,512l112.527-112.527l5.383-5.383 c13.86-13.86,21.494-32.288,21.494-51.888c0-14.849-4.389-29.02-12.539-41.045l87.326-87.325l-10.768-10.768l-86.382,86.382 l-7.748-7.748L482.716,21.535l7.749,7.749L331.042,188.708l10.768,10.768L512,29.284L482.716,0z M21.535,398.739l101.76-101.758 l9.729,9.729l-85.11,85.11l10.768,10.768l85.11-85.11l9.73,9.73L51.765,428.969L21.535,398.739z M113.261,490.466l-9.73-9.73 l63.857-63.856l-10.768-10.768l-63.857,63.856l-30.229-30.229l101.76-101.759l9.729,9.729l-59.935,59.936l10.768,10.768 l59.935-59.936l9.731,9.731l-23.214,23.215l10.768,10.766l23.213-23.214l9.73,9.73L113.261,490.466z M224.205,305.278l0.274,0.333 c8.39,10.323,12.957,23.105,12.957,36.592c0.002,0.9-0.023,1.795-0.064,2.687c-0.013,0.287-0.036,0.573-0.053,0.859 c-0.037,0.608-0.078,1.215-0.133,1.819c-0.03,0.33-0.065,0.659-0.101,0.988c-0.061,0.569-0.131,1.135-0.209,1.699 c-0.045,0.327-0.09,0.653-0.141,0.979c-0.091,0.592-0.196,1.18-0.306,1.766c-0.053,0.283-0.101,0.568-0.158,0.851 c-0.164,0.813-0.344,1.622-0.543,2.425c-0.012,0.048-0.021,0.097-0.034,0.145c-0.212,0.848-0.448,1.688-0.697,2.524 c-0.081,0.271-0.172,0.539-0.256,0.808c-0.18,0.568-0.363,1.134-0.56,1.696c-0.109,0.31-0.222,0.618-0.336,0.926 c-0.194,0.525-0.395,1.046-0.603,1.564c-0.123,0.307-0.247,0.612-0.376,0.916c-0.227,0.539-0.467,1.073-0.712,1.604 c-0.123,0.266-0.241,0.535-0.367,0.799c-0.342,0.715-0.698,1.423-1.07,2.124c-0.039,0.072-0.072,0.145-0.111,0.217 c-0.412,0.77-0.846,1.529-1.293,2.281c-0.138,0.232-0.285,0.461-0.427,0.692c-0.321,0.521-0.646,1.039-0.984,1.55 c-0.177,0.267-0.357,0.532-0.539,0.796c-0.325,0.475-0.657,0.947-0.997,1.413c-0.19,0.261-0.38,0.521-0.575,0.779 c-0.119,0.157-0.245,0.311-0.364,0.467l-91.009-91.009c0.157-0.121,0.311-0.247,0.468-0.365c0.258-0.195,0.518-0.385,0.779-0.575 c0.467-0.34,0.939-0.673,1.415-0.998c0.264-0.18,0.527-0.36,0.793-0.536c0.515-0.34,1.036-0.668,1.561-0.99 c0.227-0.139,0.452-0.284,0.68-0.42c0.753-0.449,1.515-0.884,2.287-1.297c0.063-0.034,0.127-0.064,0.19-0.096 c0.71-0.377,1.427-0.737,2.151-1.083c0.261-0.125,0.526-0.242,0.789-0.362c0.535-0.246,1.073-0.486,1.615-0.716 c0.302-0.128,0.605-0.251,0.909-0.373c0.521-0.21,1.046-0.412,1.573-0.606c0.306-0.113,0.61-0.225,0.918-0.333 c0.565-0.198,1.136-0.384,1.708-0.563c0.266-0.084,0.53-0.173,0.798-0.253c0.837-0.25,1.678-0.486,2.528-0.698 c0.046-0.011,0.091-0.02,0.137-0.031c0.805-0.199,1.616-0.38,2.431-0.544c0.283-0.058,0.57-0.106,0.854-0.158c0.586-0.11,1.174-0.213,1.764-0.306c0.325-0.051,0.652-0.095,0.979-0.141c0.565-0.078,1.132-0.147,1.701-0.209c0.328-0.036,0.656-0.071,0.985-0.101c0.605-0.055,1.213-0.097,1.822-0.134c0.286-0.017,0.571-0.04,0.857-0.053c0.893-0.041,1.789-0.065,2.688-0.065c13.473,0,26.244,4.557,36.562,12.933l0.364,0.3c1.478,1.218,2.889,2.496,4.192,3.799l9.488,9.49c0.246,0.245,0.475,0.501,0.715,0.75C222.163,302.919,223.201,304.061,224.205,305.278z"/></svg>'
+			}
+		);
+		var collectionSiteIcon = L.divIcon(
+			{
+				className: 'collectionSiteIcon',
+				iconSize: [26,26],
+				html: '<svg style="width:26px;height:26px" viewBox="0 0 24 24"><path fill="currentColor" d="M20,8H19L17,8H15V14H2V17H3A3,3 0 0,0 6,20A3,3 0 0,0 9,17H15A3,3 0 0,0 18,20A3,3 0 0,0 21,17H23V12L20,8M6,18.5A1.5,1.5 0 0,1 4.5,17A1.5,1.5 0 0,1 6,15.5A1.5,1.5 0 0,1 7.5,17A1.5,1.5 0 0,1 6,18.5M18,18.5A1.5,1.5 0 0,1 16.5,17A1.5,1.5 0 0,1 18,15.5A1.5,1.5 0 0,1 19.5,17A1.5,1.5 0 0,1 18,18.5M17,12V9.5H19.5L21.46,12H17M18,7H14V13H3L1.57,8H1V6H13L14,5H18V7Z" /></svg>'
+			}
+		);
+		var supplySiteIcon = L.divIcon(
+			{
+				className: 'supplySiteIcon',
+				iconSize: [26,26],
+				html: '<svg style="width:24px;height:24px" viewBox="0 0 24 24"><path fill="currentColor" d="M20 17Q20.86 17 21.45 17.6T22.03 19L14 22L7 20V11H8.95L16.22 13.69Q17 14 17 14.81 17 15.28 16.66 15.63T15.8 16H13L11.25 15.33L10.92 16.27L13 17H20M16 3.23Q17.06 2 18.7 2 20.06 2 21 3T22 5.3Q22 6.33 21 7.76T19.03 10.15 16 13Q13.92 11.11 12.94 10.15T10.97 7.76 10 5.3Q10 3.94 10.97 3T13.31 2Q14.91 2 16 3.23M.984 11H5V22H.984V11Z" /></svg>'
+			}
+		);
+		document.addEventListener(
+		'DOMContentLoaded',
+		function () {
+			// Parsing the URL params to set some default state
+			const queryString = window.location.search;
+			//console.log("QueryString:", queryString);
+			const mapURL = new URL(window.location);
+			//var urlParams = new URLSearchParams(queryString);
+			var town = mapURL.searchParams.get('town');
+			var drawTrashDrops = String(mapURL.searchParams.get('trashDrops')).toLowerCase() == "true";
+			var drawTeamAreas = String(mapURL.searchParams.get('teamAreas')).toLowerCase() == "true";
+			var drawCollectionSites = String(mapURL.searchParams.get('collectionSites')).toLowerCase() == "true";
+			var drawSupplySites = String(mapURL.searchParams.get('supplySites')).toLowerCase() == "true";
+			var onlyTrashMarker = String(mapURL.searchParams.get('onlyTrashMarker')).toLowerCase() == "true";
+			var hideToolbar = String(mapURL.searchParams.get('hideToolbar')).toLowerCase() == "true";
+			var autoRefresh = String(mapURL.searchParams.get('autoRefresh')).toLowerCase() == "true";
+			
+			const cb_trashdropsToggle = document.querySelector('#trashdropsToggle');
+			const cb_teamareasToggle = document.querySelector('#teamareasToggle');
+			const cb_collectionsitesToggle = document.querySelector('#collectionsitesToggle');
+			const cb_supplysitesToggle = document.querySelector('#supplysitesToggle');
+			const cb_scaleTrashMarkers = document.querySelector('#scaleTrashMarkers');
+			const cb_toolbarToggle = document.querySelector('#toolbarToggle');
+			const cb_autoRefresh = document.querySelector('#autoRefreshToggle');
+			const tb_townFilter = document.querySelector('#townFilter');
+			const btn_loadTownFilter = document.querySelector('#loadTownFilter');
+			if (drawTrashDrops) {cb_trashdropsToggle.checked = true;}
+			if (drawTeamAreas) {cb_teamareasToggle.checked = true;}
+			if (drawCollectionSites) {cb_collectionsitesToggle.checked = true;}
+			if (drawSupplySites) {cb_supplysitesToggle.checked = true;}
+			if (onlyTrashMarker) {cb_scaleTrashMarkers.checked = true;}
+			if (hideToolbar) {cb_toolbarToggle.checked = true;}
+			if (town) {tb_townFilter.value = town;}
+			if (autoRefresh) {
+				cb_autoRefresh.checked = true;
+				doAutoRefresh();
+			}
+			
+			cb_trashdropsToggle.addEventListener('click', (event) => {
+				//alert("Team Areas: " + cb_teamareasToggle.checked);
+				drawTrashDrops = cb_trashdropsToggle.checked;
+				mapURL.searchParams.set('trashDrops',drawTrashDrops);
+				history.pushState({}, null, mapURL)
+				renderTrashDrops();
+			});
+			cb_teamareasToggle.addEventListener('click', (event) => {
+				drawTeamAreas = cb_teamareasToggle.checked;
+				mapURL.searchParams.set('teamAreas',drawTeamAreas);
+				history.pushState({}, null, mapURL)
+				renderTeamAreas();
+			});
+			cb_collectionsitesToggle.addEventListener('click', (event) => {
+				drawCollectionSites = cb_collectionsitesToggle.checked;
+				mapURL.searchParams.set('collectionSites',drawCollectionSites);
+				history.pushState({}, null, mapURL)
+				renderCollectionSites();
+			});
+			cb_supplysitesToggle.addEventListener('click', (event) => {
+				drawSupplySites = cb_supplysitesToggle.checked;
+				mapURL.searchParams.set('supplySites',drawSupplySites);
+				history.pushState({}, null, mapURL);
+				renderSupplySites();
+			});
+			cb_scaleTrashMarkers.addEventListener('click', (event) => {
+				onlyTrashMarker = cb_scaleTrashMarkers.checked;
+				mapURL.searchParams.set('onlyTrashMarker',onlyTrashMarker);
+				history.pushState({}, null, mapURL);
+				renderTrashDrops();
+			});
+			var refreshIntervalObject = {};
+			function clearAutoRefresh() {
+				window.clearInterval(refreshIntervalObject);
+			}
+			cb_autoRefresh.addEventListener('click', (event) => {
+				autoRefresh = cb_autoRefresh.checked;
+				mapURL.searchParams.set('autoRefresh',autoRefresh);
+				history.pushState({}, null, mapURL);
+				if (autoRefresh) {
+					doAutoRefresh()
+				}
+				if (!autoRefresh) {
+					clearAutoRefresh();
+				}
+			});
+			cb_toolbarToggle.addEventListener('click', (event) => {
+				hideToolbar = cb_toolbarToggle.checked;
+				mapURL.searchParams.set('hideToolbar',hideToolbar);
+				history.pushState({}, null, mapURL);
+				setToolbarVisibility();
+			});
+			tb_townFilter.addEventListener('change', (event) => {
+				town = tb_townFilter.value;
+				mapURL.searchParams.set('town',town);
+				history.pushState({}, null, mapURL);
+			});
+			tb_townFilter.addEventListener('change', (event) => {
+				town = (tb_townFilter.value).toUpperCase();
+				mapURL.searchParams.set('town',town);
+				history.pushState({}, null, mapURL);
+			});
+			btn_loadTownFilter.addEventListener('click', (event) => {
+				town = (tb_townFilter.value).toUpperCase();
+				mapURL.searchParams.set('town',town);
+				history.pushState({}, null, mapURL);
+				renderTowns();
+			});
+			
+			function setToolbarVisibility() {
+				let toolbarElement = document.querySelector("#toolbar");
+				let mapElement = document.querySelector("#map");
+				hideToolbar ? toolbarElement.classList.add("hidden") : toolbarElement.classList.remove("hidden");
+				hideToolbar ? mapElement.classList.add("map-full") : mapElement.classList.remove("map-full");
+			}
+			
+			setToolbarVisibility();
+			
+			// Get the map initialized
+			var map = L.map('map').setView([44.2601, -72.5754], 7);
+			var basemap = L.tileLayer(
+			'https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}',
+			{
+				attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+				maxZoom: 18,
+				minZoom: 7,
+				id: 'mapbox/streets-v11',
+				tileSize: 512,
+				zoomOffset: -1,
+				accessToken: 'pk.eyJ1IjoibmZsb3VyaXNoIiwiYSI6ImNsMjQzbno1bjFxZzUza21pdjJ4eWdjZnYifQ.5s3l2AhlQkNDea21n4N8Sg'
+			}
+			);
+			basemap.addTo(map);
+			// With the way Leaflet works, it is helpful to keep track of the layer infos
+			// separate from the effort of adding them to the map.
+			var townboundslayer = {};
+			var townEnvelopes = {};
+			var townJSON = {};
+			
+			// Get a list of polygon GeoJSON data for all town boundaries in VT.
+			fetch("./vttowns.geojson").then(
+			response => {
+				return response.json();
+			}
+			)
+			// Then add them to the Leaflet map
+			.then(
+			json => {
+				townJSON = json;
+				renderTowns();
+			}
+			);
+			
+			function renderTowns() {
+				map.removeLayer(townboundslayer);
+				var vtTownBounds = townJSON;
+				
+				townboundslayer = L.geoJSON(
+				vtTownBounds,
+				{
+					// For each feature that is brought in ... each town boundary ...
+					// We need to flip its coordinates and store the polygon to our
+					// secondary list of such polygons by town name. This is because
+					// GeoJSON specifies storing position as [Long,Lat] and Leaflet
+					// uses [Lat,Long]. But this also is where we copy the polygons
+					// to the townEnvelopes array so we can zoom to them later, based
+					// on their name.
+					onEachFeature: function (feature, layer) {
+						// This is probably not necessary but since each VT Town name is unique
+						// they can be used to give each poly on the map an ID of the town name.
+						layer._leaflet_id = feature.properties.TOWNNAME;
+						// Some of the town polys were not importing lat/long properly,
+						// so this is in a try/catch.
+						try {
+							// Get the GeoJSON coordinates (i.e., [long,lat])
+							var gjCoords = feature.geometry.coordinates;
+							// Leaflet function call to flip the coordinates
+							var latLngCoords = L.GeoJSON.coordsToLatLngs(gjCoords, 1);
+							// create a new polygon with the flipped coordinates and store
+							// to the townEnvelope object under the key TOWNNAME
+							townEnvelopes[feature.properties.TOWNNAME] = L.polygon(latLngCoords);
+						}
+						catch (ex) {
+							console.log(ex);
+						}
+					},
+					style: function (feature) {
+						// If no URLParam for a town was given show all town bounds
+						// in a dark green border style
+						if (!town) {
+							return { color: '#009900', stroke: true }
+						}
+						// If one town was given, and this feature is it, then highlight that town with
+						// a bright green border, and light green transparent fill.
+						else if (feature.properties.TOWNNAME == town) {
+							return {
+								color: '#00CC00',
+								stroke: true,
+								fill: true,
+								fillColor: '#00FF00',
+								fillOpacity: 0.2
+							}
+						}
+						// If one town was given and this feature is not that town,
+						// then draw it with no border, and a dark transparent overlay
+						// to sort of shadow it out, helping further highlight the town
+						// that was given.
+						else {
+							return {
+								color: '#000000',
+								stroke: false,
+								fill: true,
+								fillColor: '#000000',
+								fillOpacity: 0.5
+							}
+						}
+					}
+				}
+				)
+				// Put the town boundaries on the map finally.
+				townboundslayer.addTo(map);
+				zoomToTown();
+				renderTeamAreas();
+				renderCollectionSites();
+				renderSupplySites();
+				renderTrashDrops();
+			}
+			
+			function zoomToTown() {
+				// If no town given zoom to fit all towns on map
+				if (!town) {
+					map.fitBounds(townboundslayer.getBounds());
+				}
+				else {
+					// if a town was given, this will try to pull up a polygon for it
+					var featurePoly = townEnvelopes[town];
+					// and zoom the map to fit that town's polygon
+					map.fitBounds(featurePoly.getBounds());
+				}
+			}
+			
+			// 🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥
+			// The Firebase SDK is initialized and available here!
+			
+			var teamAreasMarkers = [];
+			function renderTeamAreas() {
+				teamAreasMarkers.forEach(marker => {
+					map.removeLayer(marker);
+				});
+				teamAreasMarkers = [];
+				if (drawTeamAreas) {
+					firebase.firestore().collection("teams").get().then(
+					(querySnapshot) => {
+						querySnapshot.forEach(
+						(teamDoc) => {
+							try {
+								let team = teamDoc.data();
+								if (team.active) {
+									let locs = team['locations'];
+									locs.forEach((loc) => {
+										let coords = loc.coordinates;
+										let lat = coords.latitude;
+										let lon = coords.longitude;
+										if (lat && lon) {
+											let newMarker = L.marker(
+											[lat, lon],
+												{
+													icon: teamAreaIcon,
+													color: '#009900',
+													dashArray: '8',
+													weight: 1,
+													stroke: true,
+													opacity: 1,
+													
+													fillColor: '#FF9900',
+													fillOpacity: '0.7',
+													radius: 100
+												}
+											);
+											newMarker.bindPopup("<b>Team Clean Up Area:</b><br/>" + team.name + (team.location ? "<br/>" + team.location: "")).openPopup();
+											teamAreasMarkers.push(newMarker);
+											newMarker.addTo(map);
+										}
+									});
+								}
+							}
+							catch (ex) {
+								console.log("problem drawing team: ", ex);
+							}
+						}
+						);
+					}
+					);
+				}
+			}
+			
+			var collectionSitesMarkers = [];
+			function renderCollectionSites() {
+				collectionSitesMarkers.forEach(marker => {
+					map.removeLayer(marker);
+				});
+				collectionSitesMarkers = [];
+				if (drawCollectionSites) {
+					firebase.firestore().collection("trashCollectionSites").get().then(
+					(querySnapshot) => {
+						querySnapshot.forEach(
+						(siteDoc) => {
+							try {
+								let site = siteDoc.data();
+								if (site.active) {
+									let coords = site.coordinates;
+									let lat = coords.latitude;
+									let lon = coords.longitude;
+									if (lat && lon) {
+										let newMarker = L.marker(
+											[lat, lon],
+											{
+												icon: collectionSiteIcon,
+												color: '#0000FF',
+												dashArray: '10',
+												weight: 1,
+												stroke: true,
+												opacity: 1,
+												
+												fillColor: '#000099',
+												fillOpacity: '0.7',
+												radius: 200
+											}
+										);
+										newMarker.bindPopup("<b>Trash Collection / Drop-off Site:</b><br/>" + site.name + "<br/>" + site.address.street + ", " + site.address.city).openPopup();
+										collectionSitesMarkers.push(newMarker);
+										newMarker.addTo(map);
+									}
+								}
+							}
+							catch (ex) {
+								console.log("problem drawing team: ", ex);
+							}
+						}
+						);
+					}
+					);
+				}
+			}
+			
+			var supplySitesMarkers = [];
+			function renderSupplySites() {
+				supplySitesMarkers.forEach(marker => {
+					map.removeLayer(marker);
+				});
+				supplySitesMarkers = [];
+				if (drawSupplySites) {
+					firebase.firestore().collection("supplyDistributionSites").get().then(
+					(querySnapshot) => {
+						querySnapshot.forEach(
+						(siteDoc) => {
+							try {
+								let site = siteDoc.data();
+								if (site.active) {
+									let coords = site.coordinates;
+									let lat = coords.latitude;
+									let lon = coords.longitude;
+									if (lat && lon) {
+										
+										
+										let newMarker = L.marker(
+										[lat, lon],
+											{
+												icon: supplySiteIcon,
+												color: '#9900FF',
+												dashArray: '10',
+												weight: 1,
+												stroke: true,
+												opacity: 1,
+												
+												fillColor: '#990099',
+												fillOpacity: '0.7',
+												radius: 200
+											}
+										);
+										newMarker.bindPopup("<b>Supply Site:</b><br/>" + site.name + "<br/>" + site.address.street + ", " + site.address.city).openPopup();
+										supplySitesMarkers.push(newMarker);
+										newMarker.addTo(map);
+									}
+								}
+							}
+							catch (ex) {
+								console.log("problem drawing team: ", ex);
+							}
+						}
+						);
+					}
+					);
+				}
+			}
+			
+			var trashDropMarkers = [];
+			var trashDropImpactMarkers = [];
+			function renderTrashDrops() {
+				trashDropMarkers.forEach(marker => {
+					map.removeLayer(marker);
+				});
+				trashDropImpactMarkers.forEach(marker => {
+					map.removeLayer(marker);
+				});
+				trashDropMarkers = [];
+				trashDropImpactMarkers = [];
+				if (drawTrashDrops) {
+					// Query the firestore collection "trashDrops"
+					firebase.firestore().collection("trashDrops").get().then(
+						(trashDropQuerySnapshot) => {
+							// For Each trashDrop...
+							trashDropQuerySnapshot.forEach(
+								(doc) => {
+									// Some trashDrops have no coordinates, so
+									// this first approach will fail for those.
+									// trashDrops with no coords are probably associated
+									// with a trash drop-off site instead, so we will need
+									// to locate those and deal with those separately.
+									try {
+										let trashDrop = doc.data();
+										let loc = trashDrop['location'];
+										let coords = loc.coordinates;
+										let lat = coords.latitude;
+										let lon = coords.longitude;
+										let collectionSite = trashDrop['collectionSiteId'];
+										//console.log(doc.id, " => ", trashDrop.bagCount,lat,lon);
+										const bagMultiplier = (bags) => {
+											if (bags == 1) return 1.5;
+											if (2 >= bags <= 10) return 2;
+											if (11 >= bags <= 20) return 2.5;
+											if (bags > 20) return 3;
+										}
+										if (!onlyTrashMarker && lat && lon) {
+											let newMarker = L.marker(
+											[lat, lon],
+												{
+													icon: trashDropIcon,
+												}
+											);
+											let newMarker1 = L.marker(
+												[lat, lon],
+												{
+													bubblingMouseEvents: true,
+													icon: L.divIcon(
+														{
+															className: 'trashDropImpactIcon',
+															iconSize: [26 * bagMultiplier(doc.data().bagCount),26 * bagMultiplier(doc.data().bagCount)],
+															//iconSize: [50,50],
+															html: ""
+														}
+													)
+												}
+											);
+											newMarker.bindPopup(
+												"<b>Trash Dropped Roadside:</b><br/>" + 
+												"Bags left here: " + trashDrop.bagCount + "<br/>" +
+												(trashDrop.wasCollected ? "Picked up by town! Thanks town!":"Not yet picked up by town!")
+											).openPopup();
+											trashDropMarkers.push(newMarker);
+											trashDropImpactMarkers.push(newMarker1);
+											//newMarker.addTo(map);
+										}
+										else if (lat && lon && onlyTrashMarker) {
+											let newMarker = L.marker(
+											[lat, lon],
+												{
+													icon: trashDropIcon
+												}
+											);
+											newMarker.bindPopup(
+												"<b>Trash Dropped Roadside:</b><br/>" + 
+												"Bags left here: " + trashDrop.bagCount + "<br/>" +
+												(trashDrop.wasCollected ? "Picked up by town! Thanks town!":"Not yet picked up by town!")
+											).openPopup();
+											trashDropMarkers.push(newMarker);
+										}
+										else if (collectionSite) {
+											firebase.firestore().doc("trashCollectionSites/" + collectionSite).get().then(
+											(collectionSiteDoc) => {
+												let collectionSiteData = collectionSiteDoc.data();
+												let coords = collectionSiteData.coordinates;
+												let lat = coords.latitude;
+												let lon = coords.longitude;
+												if (!onlyTrashMarker) {
+													let newMarker = L.circle(
+														[lat, lon],
+														{
+															color: 'red',
+															fillColor: '#FF33FF',
+															fillOpacity: '0.2',
+															radius: 75 * bagMultiplier(doc.data().bagCount),
+															className: 'impact-trashDrop'
+														}
+													);
+													trashDropImpactMarkers.push(newMarker);
+													//newMarker.addTo(map);
+												}
+												else {
+													let newMarker = L.marker(
+														[lat, lon],
+														{
+															color: 'red',
+															fillColor: '#FF33FF',
+															fillOpacity: '0.2',
+															radius: 75 * bagMultiplier(doc.data().bagCount),
+															className: 'impact-trashDrop'
+														}
+													);
+													trashDropImpactMarkers.push(newMarker);
+													//newMarker.addTo(map);
+												}
+											}
+											);
+										}
+									}
+									catch (ex) {
+										console.log(ex);
+									}
+								}
+							);
+							var allTrashDrops = L.layerGroup(trashDropMarkers);
+							allTrashDrops.setZIndex = 9990;
+							allTrashDrops.addTo(map);
+							var allTrashImpacts = L.layerGroup(trashDropImpactMarkers);
+							allTrashImpacts.setZIndex = 9999;
+							allTrashImpacts.addTo(map);
+							// trashDropMarkers.forEach(marker => {
+							// 	marker.addTo(map);
+							// });
+							// trashDropImpactMarkers.forEach(marker => {
+							// 	marker.addTo(map);
+							// });
+						}
+					);
+					
+				}
+			}
+			
+			function doAutoRefresh() {
+				if (autoRefresh) {
+					console.log("Starting auto-refreshing");
+					refreshIntervalObject = setInterval(() => {
+						console.log("auto-refreshing");
+						renderTeamAreas();
+						renderCollectionSites();
+						renderSupplySites();
+						renderTrashDrops();
+					}, 60000);
+				}
+			}
+			
+			
+			
+			//firebase.functions().httpsCallable('bigben')().then(() => { });
+			// firebase.messaging().requestPermission().then(() => { });
+			// firebase.storage().ref('/path/to/ref').getDownloadURL().then(() => { });
+			// firebase.analytics(); // call to activate
+			// firebase.analytics().logEvent('tutorial_completed');
+			// firebase.performance(); // call to activate
+			//
+			// 🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥
+			
+			// renderTeamAreas();
+			// renderCollectionSites();
+			// renderSupplySites();
+			// renderTrashDrops();
+		}
+		);
+	</script>
+	
+	
 </body>
 
 </html>
