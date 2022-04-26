@@ -1,4 +1,4 @@
 node_modules/
 ui-debug.log
 package-lock.json
-.firebase/*.cache
+.firebase/**/*.cache
